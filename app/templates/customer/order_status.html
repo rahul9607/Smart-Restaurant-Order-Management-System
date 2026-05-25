@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Order Status{% endblock %}
+{% block nav %}
+  <a class="btn" href="{{ url_for('customer.menu') }}">Menu</a>
+  <a class="btn" href="{{ url_for('customer.cart_page') }}">Cart</a>
+{% endblock %}
+{% block content %}
+  <div class="card" style="max-width: 560px; color: hsl(225, 84%, 96%);">
+    <h3>Order #{{ order.id }}</h3>
+    <p><strong>Table:</strong> {{ order.table.table_number }}</p>
+    <p><strong>Status:</strong>
+      {% if order.status == "Pending" %}<span class="badge badge-pending">Pending</span>{% endif %}
+      {% if order.status == "Preparing" %}<span class="badge badge-preparing">Preparing</span>{% endif %}
+      {% if order.status == "Completed" %}<span class="badge badge-completed">Completed</span>{% endif %}
+    </p>
+    <p><strong>Total:</strong> Rs {{ "%.2f"|format(order.total_amount|float) }}</p>
+    <p><strong>Placed at:</strong> {{ order.order_date.strftime("%Y-%m-%d %H:%M") }}</p>
+  </div>
+{% endblock %}

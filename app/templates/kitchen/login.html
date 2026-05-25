@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Kitchen Login{% endblock %}
+{% block brand %}Kitchen Panel{% endblock %}
+{% block nav %}
+  <a class="btn btn-outline-light" href="{{ url_for('customer.home') }}">Customer</a>
+  <a class="btn btn-outline-info" href="{{ url_for('admin.login') }}">Admin</a>
+{% endblock %}
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-lg-5">
+      <div class="card p-4">
+        <h3 class="mb-3">Kitchen Sign In</h3>
+        <p class="muted">Default: <code>kitchen</code> / <code>kitchen123</code></p>
+        <form method="post">
+          <div class="field"><label>Username</label><input name="username" required /></div>
+          <div class="field"><label>Password</label><input type="password" name="password" required /></div>
+          <button class="btn btn-primary" type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

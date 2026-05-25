@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}All Orders{% endblock %}
+{% block brand %}SROMS Admin{% endblock %}
+{% block nav %}
+  <form class="inline" method="post" action="{{ url_for('admin.logout') }}">
+    <button class="btn btn-danger" type="submit">Logout</button>
+  </form>
+{% endblock %}
+{% block content %}
+  <div class="panel-layout">
+    <aside class="panel-sidebar">
+      <div class="sidebar-title">Admin Panel</div>
+      <a class="sidebar-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+      <a class="sidebar-link" href="{{ url_for('admin.menu_list') }}">Items</a>
+      <a class="sidebar-link" href="{{ url_for('admin.tables') }}">Tables</a>
+      <a class="sidebar-link" href="{{ url_for('admin.users') }}">Users</a>
+      <a class="sidebar-link active" href="{{ url_for('admin.orders') }}">Orders</a>
+      <a class="sidebar-link" href="{{ url_for('admin.reports') }}">Reports</a>
+      <a class="sidebar-link" href="{{ url_for('kitchen.dashboard') }}">Kitchen</a>
+    </aside>
+
+    <main class="panel-main">
+      <h3>Orders Queue</h3>
+      <div class="mb-3">
+        <a class="btn {% if filter_status == 'all' %}btn-primary{% endif %}" href="{{ url_for('admin.orders') }}">All</a>
+        <a class="btn {% if filter_status == 'Pending' %}btn-primary{% endif %}" href="{{ url_for('admin.orders', status='Pending') }}">Pending</a>
+        <a class="btn {% if filter_status == 'Preparing' %}btn-primary{% endif %}" href="{{ url_for('admin.orders', status='Preparing') }}">Preparing</a>
+        <a class="btn {% if filter_status == 'Completed' %}btn-primary{% endif %}" href="{{ url_for('admin.orders', status='Completed') }}">Completed</a>
+      </div>
+
+      <div class="card">
+        <table class="table">
+          <thead><tr><th>ID</th><th>Table</th><th>Total</th><th>Status</th><th>Date</th><th>Items</th><th>Update</th></tr></thead>
+          <tbody>
+            {% for o in orders %}
+              <tr>
+                <td>{{ o.id }}</td>
+                <td>{{ o.table.table_number }}</td>
+                <td>Rs {{ "%.2f"|format(o.total_amount|float) }}</td>
+                <td>
+                  {% if o.status == "Pending" %}<span class="badge badge-pending">Pending</span>{% endif %}
+                  {% if o.status == "Preparing" %}<span class="badge badge-preparing">Preparing</span>{% endif %}
+                  {% if o.status == "Completed" %}<span class="badge badge-completed">Completed</span>{% endif %}
+                </td>
+                <td>{{ o.order_date.strftime("%Y-%m-%d %H:%M") }}</td>
+                <td>{% for d in o.details %}{{ d.item.item_name }} x {{ d.quantity }}{% if not loop.last %}, {% endif %}{% endfor %}</td>
+                <td>
+                  <form method="post" action="{{ url_for('admin.order_status', order_id=o.id) }}">
+                    <select name="status" onchange="this.form.submit()">
+                      <option value="Pending" {% if o.status == 'Pending' %}selected{% endif %}>Pending</option>
+                      <option value="Preparing" {% if o.status == 'Preparing' %}selected{% endif %}>Preparing</option>
+                      <option value="Completed" {% if o.status == 'Completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+{% endblock %}

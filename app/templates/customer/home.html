@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Welcome · SROMS{% endblock %}
+{% block nav %}
+  {% if table_id %}
+    <a class="btn btn-primary" href="{{ url_for('customer.menu') }}">View menu</a>
+    <a class="btn" href="{{ url_for('customer.cart_page') }}">Cart</a>
+  {% endif %}
+  <a class="btn btn-ghost" href="{{ url_for('admin.login') }}">Admin</a>
+  <a class="btn btn-ghost" href="{{ url_for('kitchen.login') }}">Kitchen</a>
+{% endblock %}
+{% block content %}
+  <div class="card">
+    <h1 style="color: hsl(233, 36%, 96%);">Table ordering</h1>
+    <p class="muted">
+      Scan the QR code on your table. The link opens this site with
+      <code>?table_id=</code> so we know where to send your order.
+    </p>
+    {% if table_id %}
+      <p>You are seated at <strong>Table {{ table_id }}</strong>.</p>
+      <a class="btn btn-primary" href="{{ url_for('customer.menu') }}">Start ordering</a>
+    {% else %}
+      <p class="muted">Demo: append <code>?table_id=1</code> to the URL, then open Menu.</p>
+    {% endif %}
+  </div>
+{% endblock %}

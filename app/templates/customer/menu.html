@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Menu · Table {{ table_id }}{% endblock %}
+{% block nav %}
+  <span class="muted">Table {{ table_id }}</span>
+  <a class="btn btn-primary" href="{{ url_for('customer.cart_page') }}">
+    Cart{% if cart_qty %} ({{ cart_qty }}){% endif %}
+  </a>
+  <a class="btn btn-ghost" href="{{ url_for('customer.home') }}">Home</a>
+{% endblock %}
+{% block content %}
+  <div class="d-flex align-items-end justify-content-between flex-wrap gap-2 mb-3">
+    <div>
+      <h1 class="mb-1">Menu</h1>
+      <p class="muted mb-0">Browse by category and add items to your cart.</p>
+    </div>
+  </div>
+
+  {% for cat, items in grouped_items.items() %}
+    <section class="menu-category">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+        <h2 class="mb-0">{{ cat }}</h2>
+        <span class="muted">{{ items|length }} items</span>
+      </div>
+
+      <div class="row g-3">
+        {% for item in items %}
+          <div class="col-12 col-md-6">
+            <div class="card p-3 h-100">
+              <div class="d-flex align-items-start justify-content-between gap-3">
+                <div class="flex-grow-1">
+                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <h3 class="mb-0">{{ item.item_name }}</h3>
+                    {% if item.status == "Available" %}
+                      <span class="badge badge-completed">Available</span>
+                    {% else %}
+                      <span class="badge badge-pending">Out of Stock</span>
+                    {% endif %}
+                  </div>
+                  {% if item.description %}
+                    <p class="muted mt-1 mb-0">{{ item.description }}</p>
+                  {% else %}
+                    <p class="muted mt-1 mb-0">Freshly prepared.</p>
+                  {% endif %}
+                </div>
+
+                <div class="text-end" style="min-width: 150px">
+                  <div class="price">₹ {{ "%.2f"|format(item.price|float) }}</div>
+                  {% if item.status == "Available" %}
+                    <form method="post" action="{{ url_for('customer.cart_add') }}" class="mt-2">
+                      <input type="hidden" name="item_id" value="{{ item.id }}" />
+                      <input type="hidden" name="quantity" value="1" />
+                      <button class="btn btn-primary w-100" type="submit">Add to cart</button>
+                    </form>
+                  {% else %}
+                    <button class="btn btn-danger w-100 mt-2" type="button" disabled>Out of stock</button>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endfor %}
+{% endblock %}

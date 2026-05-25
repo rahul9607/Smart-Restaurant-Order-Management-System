@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Manage Items{% endblock %}
+{% block brand %}SROMS Admin{% endblock %}
+{% block nav %}
+  <form class="inline" method="post" action="{{ url_for('admin.logout') }}">
+    <button class="btn btn-danger" type="submit">Logout</button>
+  </form>
+{% endblock %}
+{% block content %}
+  <div class="panel-layout">
+    <aside class="panel-sidebar">
+      <div class="sidebar-title">Admin Panel</div>
+      <a class="sidebar-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+      <a class="sidebar-link active" href="{{ url_for('admin.menu_list') }}">Items</a>
+      <a class="sidebar-link" href="{{ url_for('admin.tables') }}">Tables</a>
+      <a class="sidebar-link" href="{{ url_for('admin.users') }}">Users</a>
+      <a class="sidebar-link" href="{{ url_for('admin.orders') }}">Orders</a>
+      <a class="sidebar-link" href="{{ url_for('admin.reports') }}">Reports</a>
+    </aside>
+
+    <main class="panel-main">
+      <div class="grid grid-2 mb-4">
+        <div class="card">
+          <h4>Add Item</h4>
+          <form method="post">
+            <div class="field"><label>Item Name</label><input name="item_name" required /></div>
+            <div class="field">
+              <label>Category Name</label>
+              <input name="category_name" list="categories" required />
+              <datalist id="categories">
+                {% for c in categories %}
+                  <option value="{{ c }}"></option>
+                {% endfor %}
+              </datalist>
+            </div>
+            <div class="field"><label>Price</label><input name="price" type="number" min="0" step="0.01" required /></div>
+            <div class="field"><label>Image URL</label><input name="image" /></div>
+            <div class="field"><label>Description</label><textarea name="description" rows="2"></textarea></div>
+            <div class="field">
+              <label>Status</label>
+              <select name="status">
+                <option value="Available">Available</option>
+                <option value="Out of Stock">Out of Stock</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" type="submit">Save Item</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <table class="table">
+          <thead>
+            <tr><th>ID</th><th>Item</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+              <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.item_name }}</td>
+                <td>{{ item.category_name }}</td>
+                <td>Rs {{ "%.2f"|format(item.price|float) }}</td>
+                <td>
+                  {% if item.status == "Available" %}
+                    <span class="badge badge-completed">Available</span>
+                  {% else %}
+                    <span class="badge badge-pending">Out of Stock</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <a class="btn" href="{{ url_for('admin.menu_item_edit', item_id=item.id) }}">Edit</a>
+                  <form class="inline" method="post" action="{{ url_for('admin.menu_item_delete_form', item_id=item.id) }}" onsubmit="return confirm('Delete item?');">
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+{% endblock %}

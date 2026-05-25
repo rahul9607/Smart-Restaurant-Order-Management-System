@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Manage Tables{% endblock %}
+{% block brand %}SROMS Admin{% endblock %}
+{% block nav %}
+  <form class="inline" method="post" action="{{ url_for('admin.logout') }}">
+    <button class="btn btn-danger" type="submit">Logout</button>
+  </form>
+{% endblock %}
+{% block content %}
+  <div class="panel-layout">
+    <aside class="panel-sidebar">
+      <div class="sidebar-title">Admin Panel</div>
+      <a class="sidebar-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+      <a class="sidebar-link" href="{{ url_for('admin.menu_list') }}">Items</a>
+      <a class="sidebar-link active" href="{{ url_for('admin.tables') }}">Tables</a>
+      <a class="sidebar-link" href="{{ url_for('admin.users') }}">Users</a>
+      <a class="sidebar-link" href="{{ url_for('admin.orders') }}">Orders</a>
+      <a class="sidebar-link" href="{{ url_for('admin.reports') }}">Reports</a>
+    </aside>
+
+    <main class="panel-main">
+      <div class="grid grid-2 mb-4">
+        <div class="card">
+          <h4>Add Restaurant Table</h4>
+          <form method="post">
+            <div class="field"><label>Table Number</label><input name="table_number" required /></div>
+            <div class="field">
+              <label>Status</label>
+              <select name="status"><option value="available">Available</option><option value="occupied">Occupied</option></select>
+            </div>
+            <button class="btn btn-primary" type="submit">Add Table</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <table class="table">
+          <thead><tr><th>ID</th><th>Table</th><th>QR</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            {% for t in tables %}
+              <tr>
+                <td>{{ t.id }}</td>
+                <td>{{ t.table_number }}</td>
+                <td>{{ t.qr_code }}</td>
+                <td>{{ t.status }}</td>
+                <td>
+                  <form class="inline" method="post" action="{{ url_for('admin.table_delete', table_id=t.id) }}" onsubmit="return confirm('Delete table?');">
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+{% endblock %}

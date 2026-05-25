@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.id }} confirmed{% endblock %}
+{% block nav %}
+  <button class="btn" type="button" onclick="window.print()">Print bill</button>
+  <a class="btn" href="{{ url_for('customer.order_status', order_id=order.id) }}">Track status</a>
+  <a class="btn btn-primary" href="{{ url_for('customer.menu') }}">Order more</a>
+  <a class="btn btn-ghost" href="{{ url_for('customer.home') }}">Home</a>
+{% endblock %}
+{% block content %}
+  <div class="card receipt" style="color: hsl(225, 84%, 96%);">
+    <h1>Order placed</h1>
+    <p class="muted">Thank you. The kitchen has received your order.</p>
+
+    <div class="divider"></div>
+
+    <p><strong>Order ID:</strong> {{ order.id }}</p>
+    <p><strong>Table:</strong> {{ order.table_id }}</p>
+    <p><strong>Status:</strong> {{ order.status }}</p>
+    <p><strong>Time:</strong> {{ order.order_date.strftime("%Y-%m-%d %H:%M") }}</p>
+
+    <div class="divider"></div>
+
+    <h3>Items</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Unit</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in order.details %}
+          <tr>
+            <td>{{ row.item.item_name }}</td>
+            <td>{{ row.quantity }}</td>
+            <td>₹ {{ "%.2f"|format(row.price|float) }}</td>
+            <td>₹ {{ "%.2f"|format((row.price * row.quantity)|float) }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p style="text-align: right; font-size: 1.15rem; margin-top: 1rem; color: hsl(225, 84%, 96%);">
+      <strong>Total:</strong> ₹ {{ "%.2f"|format(order.total_amount|float) }}
+    </p>
+  </div>
+{% endblock %}

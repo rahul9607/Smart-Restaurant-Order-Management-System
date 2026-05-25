@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block brand %}SROMS Admin{% endblock %}
+{% block nav %}
+  <form class="inline" method="post" action="{{ url_for('admin.logout') }}">
+    <button class="btn btn-danger" type="submit">Logout</button>
+  </form>
+{% endblock %}
+{% block content %}
+  <div class="panel-layout">
+    <aside class="panel-sidebar">
+      <div class="sidebar-title">Admin Panel</div>
+      <a class="sidebar-link active" href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+      <a class="sidebar-link" href="{{ url_for('admin.menu_list') }}">Items</a>
+      <a class="sidebar-link" href="{{ url_for('admin.tables') }}">Tables</a>
+      <a class="sidebar-link" href="{{ url_for('admin.users') }}">Users</a>
+      <a class="sidebar-link" href="{{ url_for('admin.orders') }}">Orders</a>
+      <a class="sidebar-link" href="{{ url_for('admin.reports') }}">Reports</a>
+      <a class="sidebar-link" href="{{ url_for('kitchen.dashboard') }}">Kitchen</a>
+    </aside>
+
+    <main class="panel-main">
+      <h2 class="mb-3">Dashboard</h2>
+      <div class="stats mb-4">
+        <div class="stat"><span class="muted">Pending</span><strong>{{ pending }}</strong></div>
+        <div class="stat"><span class="muted">Preparing</span><strong>{{ preparing }}</strong></div>
+        <div class="stat"><span class="muted">Completed</span><strong>{{ completed }}</strong></div>
+        <div class="stat"><span class="muted">Completed Today</span><strong>{{ completed_today }}</strong></div>
+        <div class="stat"><span class="muted">Items</span><strong>{{ item_count }}</strong></div>
+        <div class="stat"><span class="muted">Tables</span><strong>{{ table_count }}</strong></div>
+        <div class="stat"><span class="muted">Kitchen Users</span><strong>{{ kitchen_user_count }}</strong></div>
+      </div>
+    </main>
+  </div>
+{% endblock %}

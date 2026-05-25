@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Cart · Table {{ table_id }}{% endblock %}
+{% block nav %}
+  <span class="muted">Table {{ table_id }}</span>
+  <a class="btn" href="{{ url_for('customer.menu') }}">Menu</a>
+  <a class="btn btn-ghost" href="{{ url_for('customer.home') }}">Home</a>
+{% endblock %}
+{% block content %}
+  <h1>Your cart</h1>
+
+  {% if not lines %}
+    <div class="card">
+      <p class="muted">Your cart is empty.</p>
+      <a class="btn btn-primary" href="{{ url_for('customer.menu') }}">Browse menu</a>
+    </div>
+  {% else %}
+    <form method="post" action="{{ url_for('customer.cart_update') }}">
+      <div class="card" style="margin-bottom: 1rem">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>Line</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in lines %}
+              <tr>
+                <td>{{ row.item.name }}</td>
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    name="qty_{{ row.item.id }}"
+                    value="{{ row.quantity }}"
+                    style="max-width: 90px"
+                  />
+                </td>
+                <td>₹ {{ "%.2f"|format(row.line_total|float) }}</td>
+                <td>
+                  <button
+                    class="btn btn-danger"
+                    type="submit"
+                    formaction="{{ url_for('customer.cart_remove', item_id=row.item.id) }}"
+                    formmethod="post"
+                  >
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="divider"></div>
+        <p style="text-align: right; font-size: 1.1rem; color: hsl(225, 84%, 96%);">
+          <strong>Grand total:</strong> ₹ {{ "%.2f"|format(grand_total|float) }}
+        </p>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: flex-end; color: hsl(225, 84%, 96%);">
+          <button class="btn" type="submit">Update cart</button>
+        </div>
+      </div>
+    </form>
+
+    <form method="post" action="{{ url_for('customer.checkout') }}">
+      <button class="btn btn-primary" type="submit">Place order</button>
+    </form>
+  {% endif %}
+{% endblock %}

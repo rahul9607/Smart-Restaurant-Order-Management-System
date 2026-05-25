@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Edit Item{% endblock %}
+{% block brand %}SROMS Admin{% endblock %}
+{% block nav %}
+  <a class="btn" href="{{ url_for('admin.menu_list') }}">Back</a>
+{% endblock %}
+{% block content %}
+  <div class="card" style="max-width: 620px;">
+    <h4>Edit Item</h4>
+    <form method="post">
+      <div class="field"><label>Item Name</label><input name="item_name" value="{{ item.item_name }}" required /></div>
+      <div class="field">
+        <label>Category</label>
+        <input name="category_name" value="{{ item.category_name }}" list="categories" required />
+        <datalist id="categories">{% for c in categories %}<option value="{{ c }}"></option>{% endfor %}</datalist>
+      </div>
+      <div class="field"><label>Price</label><input name="price" type="number" min="0" step="0.01" value="{{ item.price }}" required /></div>
+      <div class="field"><label>Image</label><input name="image" value="{{ item.image or '' }}" /></div>
+      <div class="field"><label>Description</label><textarea name="description" rows="2">{{ item.description or '' }}</textarea></div>
+      <div class="field">
+        <label>Status</label>
+        <select name="status">
+          <option value="Available" {% if item.status == 'Available' %}selected{% endif %}>Available</option>
+          <option value="Out of Stock" {% if item.status == 'Out of Stock' %}selected{% endif %}>Out of Stock</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" type="submit">Update</button>
+    </form>
+  </div>
+{% endblock %}

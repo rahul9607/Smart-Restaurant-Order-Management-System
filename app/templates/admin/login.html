@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Admin Login{% endblock %}
+{% block brand %}SROMS Admin Panel{% endblock %}
+{% block nav %}
+  <a class="btn btn-outline-light" href="{{ url_for('customer.home') }}">Customer</a>
+  <a class="btn btn-outline-info" href="{{ url_for('kitchen.login') }}">Kitchen</a>
+{% endblock %}
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-lg-5">
+      <div class="card p-4">
+        <h3 class="mb-3">Admin Sign In</h3>
+        <p class="muted">Default: <code>admin</code> / <code>admin123</code></p>
+        <form method="post">
+          <div class="field">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" required />
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" required />
+          </div>
+          <button class="btn btn-primary" type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

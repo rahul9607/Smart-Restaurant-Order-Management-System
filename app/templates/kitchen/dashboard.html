@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Kitchen Dashboard{% endblock %}
+{% block brand %}Kitchen Panel{% endblock %}
+{% block nav %}
+  <form class="inline" method="post" action="{{ url_for('kitchen.logout') }}">
+    <button class="btn btn-danger" type="submit">Logout</button>
+  </form>
+{% endblock %}
+{% block content %}
+  <div class="panel-layout">
+    <aside class="panel-sidebar">
+      <div class="sidebar-title">Kitchen Panel</div>
+      <a class="sidebar-link active" href="{{ url_for('kitchen.dashboard') }}">Dashboard</a>
+      <a class="sidebar-link" href="{{ url_for('admin.dashboard') }}">Admin</a>
+    </aside>
+
+    <main class="panel-main">
+      <h3 class="mb-3">Live Order Queue</h3>
+      {% if request.args.get("refresh", "1") != "0" %}
+        <p class="muted mb-3">
+          Auto-refresh is ON (every 10 seconds).
+          <a href="{{ url_for('kitchen.dashboard', refresh=0) }}">Turn off</a>
+        </p>
+      {% else %}
+        <p class="muted mb-3">
+          Auto-refresh is OFF.
+          <a href="{{ url_for('kitchen.dashboard', refresh=1) }}">Turn on</a>
+        </p>
+      {% endif %}
+      <div class="row g-3">
+        <div class="col-lg-4">
+          <div class="card h-100">
+            <h5>Pending</h5>
+            {% for o in pending_orders %}
+              <div class="menu-item mb-2">
+                <div>
+                  <strong>#{{ o.id }}</strong> · Table {{ o.table.table_number }}<br />
+                  <small class="muted">{{ o.order_date.strftime("%H:%M") }}</small>
+                </div>
+                <form method="post" action="{{ url_for('kitchen.next_status', order_id=o.id) }}">
+                  <button class="btn btn-primary btn-sm" type="submit">Start</button>
+                </form>
+              </div>
+            {% else %}
+              <p class="muted">No pending orders.</p>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card h-100">
+            <h5>Preparing</h5>
+            {% for o in preparing_orders %}
+              <div class="menu-item mb-2">
+                <div>
+                  <strong>#{{ o.id }}</strong> · Table {{ o.table.table_number }}<br />
+                  <small class="muted">{{ o.order_date.strftime("%H:%M") }}</small>
+                </div>
+                <form method="post" action="{{ url_for('kitchen.next_status', order_id=o.id) }}">
+                  <button class="btn btn-success btn-sm" type="submit">Complete</button>
+                </form>
+              </div>
+            {% else %}
+              <p class="muted">No preparing orders.</p>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card h-100">
+            <h5>Completed</h5>
+            {% for o in completed_orders %}
+              <div class="menu-item mb-2">
+                <div>
+                  <strong>#{{ o.id }}</strong> · Table {{ o.table.table_number }}<br />
+                  <small class="muted">{{ o.order_date.strftime("%H:%M") }}</small>
+                </div>
+                <span class="badge badge-completed">Done</span>
+              </div>
+            {% else %}
+              <p class="muted">No completed orders.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  {% if request.args.get("refresh", "1") != "0" %}
+    <script>
+      // Simple beginner-friendly live queue refresh.
+      // Keeps UI always updated without websockets.
+      window.setInterval(() => {
+        window.location.reload();
+      }, 10000);
+    </script>
+  {% endif %}
+{% endblock %}
