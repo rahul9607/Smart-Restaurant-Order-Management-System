@@ -15,14 +15,6 @@ A Flask-based restaurant order management system with QR-enabled customer orderi
 - Kitchen dashboard for order preparation workflow
 - Automatic seed data for admin/kitchen users, menu items, and tables
 
-## Default access
-
-- Admin:
-  - Username: `admin`
-  - Password: `admin123`
-- Kitchen:
-  - Username: `kitchen`
-  - Password: `kitchen123`
 
 ## Installation
 
